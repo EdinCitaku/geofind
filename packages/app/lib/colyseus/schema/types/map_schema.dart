@@ -1,98 +1,95 @@
-import { ChangeTree } from "../ChangeTree";
+import 'dart:core';
 
-export class MapSchema<T=any> {
-protected $changes: ChangeTree;
+class MapSchema {
+  ChangeTree $changes;
 
-constructor (obj: any = {}) {
-for (let key in obj) {
-this[key] = obj[key];
-}
+  MapSchema(Map obj) {
+    for (var key in obj) {
+      // TODO:
+      this[key] = obj[key];
+    }
 
-Object.defineProperties(this, {
-$changes:     { value: undefined, enumerable: false, writable: true },
+    // TODO: port
+    Object.defineProperties(this, {
+      $changes: { value: undefined, enumerable: false, writable: true},
 
-onAdd:        { value: undefined, enumerable: false, writable: true },
-onRemove:     { value: undefined, enumerable: false, writable: true },
-onChange:     { value: undefined, enumerable: false, writable: true },
+      onAdd: { value: undefined, enumerable: false, writable: true},
+      onRemove: { value: undefined, enumerable: false, writable: true},
+      onChange: { value: undefined, enumerable: false, writable: true},
 
-clone: {
-value: (isDecoding?: boolean) => {
-let cloned: MapSchema;
+      clone: {
+        "value": (bool isDecoding) {
+          MapSchema cloned;
 
-if (isDecoding) {
-// client-side
-cloned = Object.assign(new MapSchema(), this);
-cloned.onAdd = this.onAdd;
-cloned.onRemove = this.onRemove;
-cloned.onChange = this.onChange;
+          if (isDecoding) {
+            // client-side
+            cloned = Object.assign(new MapSchema(), this);
+            cloned.onAdd = this.onAdd;
+            cloned.onRemove = this.onRemove;
+            cloned.onChange = this.onChange;
+          } else {
+            // server-side
+            MapSchema cloned = new MapSchema();
+            for (var key in this) {
+              if (typeof (this[key]) === "object") {
+                cloned[key] = this[key].clone();
+              } else {
+                cloned[key] = this[key];
+              }
+            }
+          }
+          return
+          cloned;
+        }
+      },
 
-} else {
-// server-side
-const cloned = new MapSchema();
-for (let key in this) {
-if (typeof (this[key]) === "object") {
-cloned[key] = this[key].clone();
+      triggerAll: {
+        "value": () {
+          if (!this.onAdd) {
+            return;
+          }
 
-} else {
-cloned[key] = this[key];
-}
-}
-}
+          for (var key in this) {
+            this.onAdd(this[key], key);
+          }
+        }
+      },
 
-return cloned;
-}
-},
+      "toJSON": {
+        "value": () {
+          Map map = {};
+          for (let key in this) {
+            map[key] = (typeof(this[key].toJSON) == "function")
+                ? this[key].toJSON()
+                : this[key];
+          }
+          return map;
+        }
+      },
 
-triggerAll: {
-value: () => {
-if (!this.onAdd) {
-return;
-}
+      _indexes: { "value": new Map(), "enumerable": false, "writable": true},
+      _updateIndexes: {
+        "value": (allKeys) {
+          var int index = 0;
+          Map indexes = new Map();
+          for (let key of allKeys) {
+            indexes.set(key, index++);
+          }
 
-for (let key in this) {
-this.onAdd(this[key], key);
-}
-}
-},
+          this._indexes = indexes;
+        }
+      },
+    });
+  }
 
-toJSON: {
-value: () => {
-const map: any = {};
-for (let key in this) {
-map[key] = (typeof(this[key].toJSON) === "function")
-? this[key].toJSON()
-    : this[key];
-}
-return map;
-}
-},
+  MapSchema clone = (bool isDecoding) => MapSchema;
 
-_indexes: { value: new Map<string, number>(), enumerable: false, writable: true },
-_updateIndexes: {
-value: (allKeys) => {
-let index: number = 0;
+  Function onAdd = () {};
+  Function onRemove = () {};
+  Function onChange = () {};
 
-let indexes = new Map<string, number>();
-for (let key of allKeys) {
-indexes.set(key, index++);
-}
+  triggerAll() {}
 
-this._indexes = indexes;
-}
-},
-});
-}
-
-[key: string]: T | any;
-
-clone: (isDecoding?: boolean) => MapSchema<T>;
-
-onAdd: (item: T, key: string) => void;
-onRemove: (item: T, key: string) => void;
-onChange: (item: T, key: string) => void;
-
-triggerAll: () => void;
-
-_indexes: Map<string, number>;
-_updateIndexes: (keys: string[]) => void;
+  Map _indexes;
+  MapSchema _updateIndexes = () {};
 }

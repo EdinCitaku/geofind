@@ -1,4 +1,3 @@
-import { NIL, INDEX_CHANGE } from "../spec";
 /**
  * Copyright (c) 2018 Endel Dreyer
  * Copyright (c) 2014 Ion Drive Software Ltd.
@@ -27,10 +26,12 @@ import { NIL, INDEX_CHANGE } from "../spec";
  * https://github.com/darrachequesne/notepack
  */
 
-export interface Iterator { offset: number; }
+export interface
+Iterator { offset: number; }
 
-function utf8Read(bytes, offset, length) {
-  var string = '', chr = 0;
+utf8Read(bytes, offset, length) {
+  var string = '',
+      chr = 0;
   for (var i = offset, end = offset + length; i < end; i++) {
     var byte = bytes[i];
     if ((byte & 0x80) === 0x00) {
@@ -59,7 +60,8 @@ function utf8Read(bytes, offset, length) {
       ((bytes[++i] & 0x3f) << 0);
       if (chr >= 0x010000) { // surrogate pair
         chr -= 0x010000;
-        string += String.fromCharCode((chr >>> 10) + 0xD800, (chr & 0x3FF) + 0xDC00);
+        string +=
+            String.fromCharCode((chr >>> 10) + 0xD800, (chr & 0x3FF) + 0xDC00);
       } else {
         string += String.fromCharCode(chr);
       }
@@ -70,164 +72,160 @@ function utf8Read(bytes, offset, length) {
   return string;
 }
 
-export function int8 (bytes: number[], it: Iterator) {
-return uint8(bytes, it) << 24 >> 24;
+int8(List<int> bytes, Iterator it) {
+  return uint8(bytes, it) << 24 >> 24;
 };
 
-export function uint8 (bytes: number[], it: Iterator) {
-return bytes[it.offset++];
+uint8(List<int> bytes, Iterator it) {
+  return bytes[it.offset++];
 };
 
-export function int16 (bytes: number[], it: Iterator) {
-return uint16(bytes, it) << 16 >> 16;
+int16(List<int> bytes, Iterator it) {
+  return uint16(bytes, it) << 16 >> 16;
 };
 
-export function uint16 (bytes: number[], it: Iterator) {
-return bytes[it.offset++] | bytes[it.offset++] << 8;
+uint16(List<int> bytes, Iterator it) {
+  return bytes[it.offset++] | bytes[it.offset++] << 8;
 };
 
-export function int32 (bytes: number[], it: Iterator) {
-return bytes[it.offset++] | bytes[it.offset++] << 8 | bytes[it.offset++] << 16 | bytes[it.offset++] << 24;
+int32(List<int> bytes, Iterator it) {
+  return bytes[it.offset++] | bytes[it.offset++] << 8 | bytes[it.offset++] <<
+      16 | bytes[it.offset++] << 24;
 };
 
-export function uint32 (bytes: number[], it: Iterator) {
-return int32(bytes, it) >>> 0;
+uint32(List<int> bytes, Iterator it) {
+  return int32(bytes, it)
+  >
+  >
+  >
+  0;
 };
 
-export function float32(bytes: number[], it: Iterator) {
-return readFloat32(bytes, it);
+float32(List<int> bytes, Iterator it) {
+  return readFloat32(bytes, it);
 }
 
-export function float64(bytes: number[], it: Iterator) {
-return readFloat64(bytes, it);
+float64(List<int> bytes, Iterator it) {
+  return readFloat64(bytes, it);
 }
 
-export function int64(bytes: number[], it: Iterator) {
-const low = uint32(bytes, it);
-const high = int32(bytes, it) * Math.pow(2, 32);
-return high + low;
+int64(List<int> bytes, Iterator it) {
+  const low = uint32(bytes, it);
+  const high = int32(bytes, it) * Math.pow(2, 32);
+  return high + low;
 };
 
-export function uint64(bytes: number[], it: Iterator) {
-const low = uint32(bytes, it);
-const high = uint32(bytes, it) * Math.pow(2, 32);
-return high + low;
+uint64(List<int> bytes, Iterator it) {
+  const low = uint32(bytes, it);
+  const high = uint32(bytes, it) * Math.pow(2, 32);
+  return high + low;
 };
 
 // force little endian to facilitate decoding on multiple implementations
-const _isLittleEndian = true;  // new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
+const _isLittleEndian = true; // new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
 const _int32 = new Int32Array(2);
 const _float32 = new Float32Array(_int32.buffer);
 const _float64 = new Float64Array(_int32.buffer);
 
-export function readFloat32 (bytes: number[], it: Iterator) {
-_int32[0] = int32(bytes, it);
-return _float32[0];
+readFloat32(List<int> bytes, Iterator it) {
+  _int32[0] = int32(bytes, it);
+  return _float32[0];
 };
 
-export function readFloat64 (bytes: number[], it: Iterator) {
-_int32[_isLittleEndian ? 0 : 1] = int32(bytes, it);
-_int32[_isLittleEndian ? 1 : 0] = int32(bytes, it);
-return _float64[0];
+readFloat64(List<int> bytes, Iterator it) {
+  _int32[_isLittleEndian ? 0 : 1] = int32(bytes, it);
+  _int32[_isLittleEndian ? 1 : 0] = int32(bytes, it);
+  return _float64[0];
 };
 
-export function boolean (bytes: number[], it: Iterator) {
-return uint8(bytes, it) > 0;
+boolean(List<int> bytes, Iterator it) {
+  return uint8(bytes, it) > 0;
 };
 
-export function string (bytes, it: Iterator) {
-const prefix = bytes[it.offset++];
-let length: number;
+string(bytes, Iterator it) {
+  var prefix = bytes[it.offset++];
+  var length
+  : number;
 
-if (prefix < 0xc0) {
+  if (prefix < 0xc0) {
 // fixstr
-length = prefix & 0x1f;
+  length = prefix & 0x1f;
 
-} else if (prefix === 0xd9) {
-length = uint8(bytes, it);
+  } else if (prefix === 0xd9) {
+  length = uint8(bytes, it);
 
-} else if (prefix === 0xda) {
-length = uint16(bytes, it);
+  } else if (prefix === 0xda) {
+  length = uint16(bytes, it);
 
-} else if (prefix === 0xdb) {
-length = uint32(bytes, it);
+  } else if (prefix === 0xdb) {
+  length = uint32(bytes, it);
+  }
+
+  const value = utf8Read(bytes, it.offset, length);
+  it.offset += length;
+
+  return
+  value;
 }
 
-const value = utf8Read(bytes, it.offset, length);
-it.offset += length;
-
-return value;
-}
-
-export function stringCheck(bytes, it: Iterator) {
-const prefix = bytes[it.offset];
-return (
+stringCheck(bytes, Iterator it) {
+  const prefix = bytes[it.offset];
+  return (
 // fixstr
-(prefix < 0xc0 && prefix > 0xa0) ||
+      (prefix < 0xc0 && prefix > 0xa0) ||
 // str 8
-prefix === 0xd9 ||
+          prefix === 0xd9 ||
 // str 16
-prefix === 0xda ||
+      prefix === 0xda ||
 // str 32
-prefix === 0xdb
-);
+      prefix === 0xdb
+  );
 }
 
-export function number (bytes, it: Iterator) {
-const prefix = bytes[it.offset++];
+number(bytes, Iterator it) {
+  const prefix = bytes[it.offset++];
 
-if (prefix < 0x80) {
+  if (prefix < 0x80) {
 // positive fixint
-return prefix;
-
-} else if (prefix === 0xca) {
+    return prefix;
+  } else if (prefix === 0xca) {
 // float 32
-return readFloat32(bytes, it);
-
-} else if (prefix === 0xcb) {
+    return readFloat32(bytes, it);
+  } else if (prefix === 0xcb) {
 // float 64
-return readFloat64(bytes, it);
-
-} else if (prefix === 0xcc) {
+    return readFloat64(bytes, it);
+  } else if (prefix === 0xcc) {
 // uint 8
-return uint8(bytes, it);
-
-} else if (prefix === 0xcd) {
+    return uint8(bytes, it);
+  } else if (prefix === 0xcd) {
 // uint 16
-return uint16(bytes, it);
-
-} else if (prefix === 0xce) {
+    return uint16(bytes, it);
+  } else if (prefix === 0xce) {
 // uint 32
-return uint32(bytes, it);
-
-} else if (prefix === 0xcf) {
+    return uint32(bytes, it);
+  } else if (prefix === 0xcf) {
 // uint 64
-return uint64(bytes, it);
-
-} else if (prefix === 0xd0) {
+    return uint64(bytes, it);
+  } else if (prefix === 0xd0) {
 // int 8
-return int8(bytes, it);
-
-} else if (prefix === 0xd1) {
+    return int8(bytes, it);
+  } else if (prefix === 0xd1) {
 // int 16
-return int16(bytes, it);
-
-} else if (prefix === 0xd2) {
+    return int16(bytes, it);
+  } else if (prefix === 0xd2) {
 // int 32
-return int32(bytes, it);
-
-} else if (prefix === 0xd3) {
+    return int32(bytes, it);
+  } else if (prefix === 0xd3) {
 // int 64
-return int64(bytes, it);
-
-} else if (prefix > 0xdf) {
+    return int64(bytes, it);
+  } else if (prefix > 0xdf) {
 // negative fixint
-return (0xff - prefix + 1) * -1
-}
+    return (0xff - prefix + 1) * -1
+  }
 };
 
-export function numberCheck (bytes, it: Iterator) {
-const prefix = bytes[it.offset];
+numberCheck(bytes, Iterator it) {
+  var prefix = bytes[it.offset];
 // positive fixint - 0x00 - 0x7f
 // float 32        - 0xca
 // float 64        - 0xcb
@@ -239,14 +237,14 @@ const prefix = bytes[it.offset];
 // int 16          - 0xd1
 // int 32          - 0xd2
 // int 64          - 0xd3
-return (
-prefix < 0x80 ||
-(prefix >= 0xca && prefix <= 0xd3)
-);
+  return (
+      prefix < 0x80 ||
+          (prefix >= 0xca && prefix <= 0xd3)
+  );
 }
 
-export function arrayCheck (bytes, it: Iterator) {
-return bytes[it.offset] < 0xa0;
+arrayCheck(bytes, Iterator it) {
+  return bytes[it.offset] < 0xa0;
 
 // const prefix = bytes[it.offset] ;
 
@@ -264,10 +262,11 @@ return bytes[it.offset] < 0xa0;
 // return prefix;
 }
 
-export function nilCheck(bytes, it: Iterator) {
-return bytes[it.offset] === NIL;
+nilCheck(bytes, Iterator it) {
+  return bytes[it.offset] === NIL
+
 }
 
-export function indexChangeCheck(bytes, it: Iterator) {
-return bytes[it.offset] === INDEX_CHANGE;
+indexChangeCheck(bytes, Iterator it) {
+  return bytes[it.offset] === INDEX_CHANGE;
 }

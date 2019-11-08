@@ -21,14 +21,9 @@
  * SOFTWARE
  */
 
-/**
- * msgpack implementation highly based on notepack.io
- * https://github.com/darrachequesne/notepack
- */
-
-
-function utf8Length(str) {
-  var c = 0, length = 0;
+utf8Length(str) {
+  var c = 0,
+      length = 0;
   for (var i = 0, l = str.length; i < l; i++) {
     c = str.charCodeAt(i);
     if (c < 0x80) {
@@ -48,7 +43,7 @@ function utf8Length(str) {
   return length;
 }
 
-export function utf8Write(view, offset, str) {
+utf8Write(view, offset, str) {
   var c = 0;
   for (var i = 0, l = str.length; i < l; i++) {
     c = str.charCodeAt(i);
@@ -75,91 +70,105 @@ export function utf8Write(view, offset, str) {
   }
 }
 
-export function int8(bytes, value) {
+int8(bytes, value) {
   bytes.push(value & 255);
 };
 
-export function uint8(bytes, value) {
+uint8(bytes, value) {
   bytes.push(value & 255);
 };
 
-export function int16(bytes, value) {
-  bytes.push(value & 255);
-  bytes.push((value >> 8) & 255);
-};
-
-export function uint16(bytes, value) {
+int16(bytes, value) {
   bytes.push(value & 255);
   bytes.push((value >> 8) & 255);
 };
 
-export function int32(bytes, value) {
+uint16(bytes, value) {
+  bytes.push(value & 255);
+  bytes.push((value >> 8) & 255);
+};
+
+int32(bytes, value) {
   bytes.push(value & 255);
   bytes.push((value >> 8) & 255);
   bytes.push((value >> 16) & 255);
   bytes.push((value >> 24) & 255);
 };
 
-export function uint32(bytes, value) {
-  const b4 = value >> 24;
-  const b3 = value >> 16;
-  const b2 = value >> 8;
-  const b1 = value;
+uint32(bytes, var value) {
+  var b4 = value >> 24;
+  var b3 = value >> 16;
+  var b2 = value >> 8;
+  var b1 = value;
   bytes.push(b1 & 255);
   bytes.push(b2 & 255);
   bytes.push(b3 & 255);
   bytes.push(b4 & 255);
 };
 
-export function int64(bytes, value) {
-  const high = Math.floor(value / Math.pow(2, 32));
-  const low = value >>> 0;
+int64(bytes, value) {
+  var high = Math.floor(value / Math.pow(2, 32));
+  var low = value
+  >>> 0;
   uint32(bytes, low);
-  uint32(bytes, high);
+  uint32
+  (
+  bytes
+  ,
+  high
+  );
 };
 
-export function uint64(bytes, value) {
-  const high = (value / Math.pow(2, 32)) >> 0;
-  const low = value >>> 0;
+uint64(bytes, value) {
+  var high = (value / Math.pow(2, 32)) >> 0;
+  var low = value
+  >>> 0;
   uint32(bytes, low);
-  uint32(bytes, high);
+  uint32
+  (
+  bytes
+  ,
+  high
+  );
 };
 
-export function float32(bytes, value) {
+float32(bytes, value) {
   writeFloat32(bytes, value);
 }
 
-export function float64(bytes, value) {
+float64(bytes, value) {
   writeFloat64(bytes, value);
 }
 
 // force little endian to facilitate decoding on multiple implementations
-const _isLittleEndian = true;  // new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
-const _int32 = new Int32Array(2);
-const _float32 = new Float32Array(_int32.buffer);
+var _isLittleEndian = true; // new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
+var _int32 = new Int32Array(2);
+var _float32 = new Float32Array(_int32.buffer);
 const _float64 = new Float64Array(_int32.buffer);
 
-export function writeFloat32(bytes, value) {
+writeFloat32(bytes, value) {
   _float32[0] = value;
   int32(bytes, _int32[0]);
 };
 
-export function writeFloat64(bytes, value) {
+writeFloat64(bytes, value) {
   _float64[0] = value;
   int32(bytes, _int32[_isLittleEndian ? 0 : 1]);
   int32(bytes, _int32[_isLittleEndian ? 1 : 0]);
 };
 
-export function boolean(bytes, value) {
+boolean(bytes, value) {
   return uint8(bytes, value ? 1 : 0);
 };
 
-export function string(bytes, value) {
+string(bytes, value) {
   // encode `null` strings as empty.
-  if (!value) { value = ""; }
+  if (!value) {
+    value = "";
+  }
 
-  let length = utf8Length(value);
-  let size = 0;
+  var length = utf8Length(value);
+  var size = 0;
 
   // fixstr
   if (length < 0x20) {
@@ -192,14 +201,14 @@ export function string(bytes, value) {
   return size + length;
 }
 
-export function number(bytes, value) {
+number(bytes, value) {
   if (isNaN(value)) {
     return number(bytes, 0);
-
   } else if (!isFinite(value)) {
-    return number(bytes, (value > 0) ? Number.MAX_SAFE_INTEGER : -Number.MAX_SAFE_INTEGER);
-
-  } else if (value !== (value|0)) {
+    return number(bytes,
+        (value > 0) ? Number.MAX_SAFE_INTEGER : -Number.MAX_SAFE_INTEGER);
+  } else if (value !== (value|0)
+  ) {
   bytes.push(0xcb);
   writeFloat64(bytes, value);
   return 9;

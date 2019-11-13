@@ -41,4 +41,13 @@ export class UserHandler extends Handler {
     public toggleReady(client: Client) {
         this.room.state.players[client.sessionId].isReady = !this.room.state.players[client.sessionId].isReady;
     }
+
+    @handle("user:pin:set")
+    public changePin(client: Client, newPin: any) {
+        client.auth.pin = newPin;
+        client.auth.updateOne(client.auth, {
+                pin: newPin,
+        });
+    }
+
 }

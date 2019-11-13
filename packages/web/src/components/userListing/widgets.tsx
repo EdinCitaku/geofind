@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 import styled from "styled-components";
-import {Button} from "../uiWidgets/Button";
+import { Button } from "../uiWidgets/Button";
 
 export const UserListingWrapper = styled.div`
   width: 100%;
@@ -39,7 +39,20 @@ export const UserColor = styled.div`
   height: 24px;
   border-radius: 50%;
   border: 1px solid #aaa;
+  margin-right: 20px;
 `;
+
+/*
+TODO after the Pin functionality works
+export const Pin = styled.div`
+    font-size: 24px;
+    margin-right: 20px;
+    @media (max-width: 767px){
+      font-size: 14px;
+    }
+`;
+*/
+
 export const ReadyButton = styled(Button)`
   position: relative;
   float: right;

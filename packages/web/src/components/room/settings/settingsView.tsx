@@ -1,18 +1,20 @@
 import React from "react";
-import {Award, Eye, GitHub, Globe, Hexagon, Home, PlayCircle, Watch} from "react-feather";
-import {strings} from "../../../i18n";
-import {RoomSetting, RoomSettingsWrapper} from "./widgets";
+import { Award, Eye, GitHub, Globe, Hexagon, Home, PlayCircle, Watch } from "react-feather";
+import { strings } from "../../../i18n";
+import { RoomSetting, RoomSettingsWrapper } from "./widgets";
 
 const GAME_MODE_ICONS = {
-    game_animals: <GitHub/>,
-    game_buildings: <Home/>,
-    game_countries: <Globe/>,
-    game_shapeguessing: <Hexagon/>,
-    game_streetview: <Eye/>,
+    game_animals: <GitHub />,
+    game_buildings: <Home />,
+    game_countries: <Globe />,
+    game_shapeguessing: <Hexagon />,
+    game_streetview: <Eye />,
 };
+var ping1 = require('../../../assets/ping1.png');
 
-export const RoomSettingsView = ({room}) => {
-    const gameModeIcon = GAME_MODE_ICONS[room.gameMode] || <Globe/>;
+
+export const RoomSettingsView = ({ room }) => {
+    const gameModeIcon = GAME_MODE_ICONS[room.gameMode] || <Globe />;
 
     return (
         <RoomSettingsWrapper>
@@ -21,17 +23,19 @@ export const RoomSettingsView = ({room}) => {
                 {strings.gameMode}
             </RoomSetting>
             <RoomSetting>
-                <Watch/>
+                <Watch />
                 {room.roundTime}s
             </RoomSetting>
             <RoomSetting>
-                <PlayCircle/>
+                <PlayCircle />
                 {room.maxRounds}
             </RoomSetting>
             <RoomSetting>
-                <Award/>
+                <Award />
                 {room.victoryScore}
             </RoomSetting>
+
+
         </RoomSettingsWrapper>
     );
 };

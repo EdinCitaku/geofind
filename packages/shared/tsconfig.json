@@ -13,6 +13,6 @@
     "strict": true,
     "declaration": true,
     "jsx": "react",
-    "sourceMap": true
+    "sourceMap": true,
   }
 }

@@ -37,6 +37,9 @@ export class Player extends Schema {
     @type("string")
     public color: string;
 
+    @type("string")
+    public pin: string;
+
     @type("boolean")
     public isReady: boolean;
 }

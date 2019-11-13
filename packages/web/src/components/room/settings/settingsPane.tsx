@@ -1,7 +1,7 @@
 import React from "react";
-import {strings} from "../../../i18n";
-import {HorizontalAlignment} from "../../uiWidgets/HorizontalAlignment";
-import {GameModeSelection} from "./gameModeSelection";
+import { strings } from "../../../i18n";
+import { HorizontalAlignment } from "../../uiWidgets/HorizontalAlignment";
+import { GameModeSelection } from "./gameModeSelection";
 import {
     MaxRoundsInput,
     RoomSettingsHeader,
@@ -10,18 +10,18 @@ import {
     VictoryScoreInput,
 } from "./widgets";
 
-export const RoomSettingsPane = ({collapsed, room, updateRoomSettings}) => {
+export const RoomSettingsPane = ({ collapsed, room, updateRoomSettings }) => {
     const updateSettingFromEvent = (key) => {
         return (event) => {
-            updateRoomSettings({[key]: event.target.value});
+            updateRoomSettings({ [key]: event.target.value });
         };
     };
 
     const settings = [
-        {key: "gameMode", component: GameModeSelection},
-        {key: "roundTime", component: RoundTimeInput},
-        {key: "maxRounds", component: MaxRoundsInput},
-        {key: "victoryScore", component: VictoryScoreInput},
+        { key: "gameMode", component: GameModeSelection },
+        { key: "roundTime", component: RoundTimeInput },
+        { key: "maxRounds", component: MaxRoundsInput },
+        { key: "victoryScore", component: VictoryScoreInput },
     ];
 
     const settingsFields = settings.map((settingsField) => {
@@ -30,17 +30,17 @@ export const RoomSettingsPane = ({collapsed, room, updateRoomSettings}) => {
                 <RoomSettingsHeader>{strings[settingsField.key]}</RoomSettingsHeader>
                 <settingsField.component
                     defaultValue={room[settingsField.key]}
-                    onChange={updateSettingFromEvent(settingsField.key)}
+                    onChange={() => { updateSettingFromEvent(settingsField.key) }}
                 />
             </div>
         );
     });
 
-    const handleInsultModeChange = () => updateRoomSettings({insultMode: !room.insultMode});
+    const handleInsultModeChange = () => updateRoomSettings({ insultMode: !room.insultMode });
 
     return (
         <RoomSettingsPaneWrapper collapsed={collapsed}>
-            <HorizontalAlignment className="ha" style={{justifyContent: "space-between"}}>
+            <HorizontalAlignment className="ha" style={{ justifyContent: "space-between" }}>
                 {settingsFields}
             </HorizontalAlignment>
             <div>

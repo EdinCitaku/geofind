@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "concurrently": "^4.1.1",
+    "react-image-select": "^1.0.1",
     "tslint": "^5.19.0"
   },
   "devDependencies": {

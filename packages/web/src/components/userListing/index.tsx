@@ -36,14 +36,14 @@ export default ({ room, players }) => {
         window.currentRoom.send({ type: "user:color:set", payload: color });
     };
 
-    const onPinChange = (pin) => {
-        window.currentRoom.send({ type: "user:pin:set", payload: pin });
+    const onPinColorChange = (pincolor) => {
+        window.currentRoom.send({ type: "user:pin:set", payload: pincolor });
     };
 
 
     return (
         <UserListingWrapper>
-            <PlayerRows room={room} onColorChange={onColorChange} onPinChange={onPinChange} players={room.players} />
+            <PlayerRows room={room} onColorChange={onColorChange} onPinColorChange={onPinColorChange} players={room.players} />
         </UserListingWrapper>
     );
 };

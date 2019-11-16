@@ -10,7 +10,7 @@ export class UserHandler extends Handler {
         client.auth.updateOne(client.auth, {
             metadata: {
                 ...client.auth.metadata,
-                pin_color: newColor,
+                pin_ncolor: newColor,
             },
         });
         this.room.state.players[client.sessionId].color = client.auth.metadata.pin_color;
@@ -43,11 +43,15 @@ export class UserHandler extends Handler {
     }
 
     @handle("user:pin:set")
-    public changePin(client: Client, newPin: any) {
-        client.auth.pin = newPin;
+    public changePinColor(client: Client, newColor: any) {
+        client.auth.metadata.pin_color = newColor.hex;
         client.auth.updateOne(client.auth, {
-                pin: newPin,
+            metadata: {
+                ...client.auth.metadata,
+                pin_ncolor: newColor,
+            },
         });
+        this.room.state.players[client.sessionId].pin_color = client.auth.metadata.pin_color;
     }
 
 }

@@ -10,7 +10,6 @@ const GAME_MODE_ICONS = {
     game_shapeguessing: <Hexagon />,
     game_streetview: <Eye />,
 };
-var ping1 = require('../../../assets/ping1.png');
 
 
 export const RoomSettingsView = ({ room }) => {

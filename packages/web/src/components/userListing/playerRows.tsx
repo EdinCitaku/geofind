@@ -1,7 +1,7 @@
 import React from "react";
 import { PlayerRow } from "./playerRow";
 
-export const PlayerRows = ({ room, players, onColorChange, onPinChange }) => {
+export const PlayerRows = ({ room, players, onColorChange, onPinColorChange }) => {
     const playerObjects = Object.keys(players).map((playerId) => players[playerId]);
 
     const playerRows = playerObjects.map((player) => {
@@ -9,7 +9,7 @@ export const PlayerRows = ({ room, players, onColorChange, onPinChange }) => {
             <div key={player.id}>
                 <PlayerRow
                     onColorChange={onColorChange}
-                    onPinChange={onPinChange}
+                    onPinChange={onPinColorChange}
                     room={room}
                     player={player}
                 />
